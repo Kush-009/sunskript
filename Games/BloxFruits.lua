@@ -51,7 +51,12 @@ end
 local function Teleport(cf)
     local hrp = GetHRP()
     if hrp then
-        hrp.CFrame = cf
+        local dist = (hrp.Position - cf.Position).Magnitude
+        if dist < 250 then
+            hrp.CFrame = cf
+        else
+            TweenTo(cf, 300)
+        end
     end
 end
 
