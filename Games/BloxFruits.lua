@@ -1429,23 +1429,69 @@ do
 end
 
 -- ═══════════════════════════════════════════════
--- KEYBIND: RightShift = toggle UI
+-- KEYBIND & MOBILE TOGGLE
 -- ═══════════════════════════════════════════════
 
 local uiVisible = true
+
+local function ToggleUI()
+    uiVisible = not uiVisible
+    MainFrame.Visible = uiVisible
+end
+
 UserInputService.InputBegan:Connect(function(input, processed)
     if processed then return end
-    if input.KeyCode == Enum.KeyCode.RightShift then
-        uiVisible = not uiVisible
-        MainFrame.Visible = uiVisible
+    if input.KeyCode == Enum.KeyCode.RightControl then
+        ToggleUI()
     end
+end)
+
+local MobileBtn = Instance.new("TextButton")
+MobileBtn.Name = "MobileToggle"
+MobileBtn.Size = UDim2.new(0, 46, 0, 46)
+MobileBtn.Position = UDim2.new(0, 15, 0.5, -23)
+MobileBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+MobileBtn.BackgroundTransparency = 0.2
+MobileBtn.Text = "☀"
+MobileBtn.TextColor3 = Color3.fromRGB(255, 180, 50)
+MobileBtn.TextSize = 24
+MobileBtn.Font = Enum.Font.GothamBold
+MobileBtn.ZIndex = 50
+MobileBtn.Active = true
+MobileBtn.Draggable = true
+MobileBtn.Parent = ScreenGui
+
+local MobileBtnCorner = Instance.new("UICorner", MobileBtn)
+MobileBtnCorner.CornerRadius = UDim.new(1, 0)
+local MobileBtnStroke = Instance.new("UIStroke", MobileBtn)
+MobileBtnStroke.Color = Color3.fromRGB(255, 180, 50)
+MobileBtnStroke.Thickness = 2
+MobileBtnStroke.Transparency = 0.5
+
+MobileBtn.MouseButton1Click:Connect(function()
+    ToggleUI()
 end)
 
 -- ═══════════════════════════════════════════════
 -- CLOSE / MINIMIZE
 -- ═══════════════════════════════════════════════
 
+local closeConfirm = false
 CloseBtn.MouseButton1Click:Connect(function()
+    if not closeConfirm then
+        closeConfirm = true
+        CloseBtn.Text = "Sure?"
+        CloseBtn.TextColor3 = Color3.fromRGB(240, 80, 80)
+        task.delay(3, function()
+            if closeConfirm then
+                closeConfirm = false
+                CloseBtn.Text = "✕"
+                CloseBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+            end
+        end)
+        return
+    end
+
     State._running = false
     ClearESP()
     for _, conn in ipairs(State._connections) do
@@ -1486,5 +1532,5 @@ end)
 -- DONE
 -- ═══════════════════════════════════════════════
 
-Notify("Sun Skript", "Blox Fruits module loaded! Press RightShift to toggle.")
+Notify("Sun Skript", "Blox Fruits module loaded! Press RightControl or tap the Sun icon to toggle.")
 print("[Sun Skript] Blox Fruits v1.0.0 loaded — " .. #QuestData .. " quest levels mapped.")
