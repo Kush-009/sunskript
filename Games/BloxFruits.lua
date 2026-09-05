@@ -1456,10 +1456,37 @@ end
 -- ═══════════════════════════════════════════════
 
 local uiVisible = true
+local lastPos = UDim2.new(0.5, -280, 0.5, -190) -- Default center position
 
 local function ToggleUI()
     uiVisible = not uiVisible
-    MainFrame.Visible = uiVisible
+    if uiVisible then
+        MainFrame.Visible = true
+        Tw(MainFrame, {
+            Size = UDim2.new(0, 560, 0, 380),
+            Position = lastPos,
+            BackgroundTransparency = 0.05
+        }, 0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+    else
+        lastPos = MainFrame.Position
+        
+        -- Target the center of the Sun Logo
+        local targetPos = UDim2.new(
+            MobileBtn.Position.X.Scale, MobileBtn.Position.X.Offset + (MobileBtn.Size.X.Offset/2),
+            MobileBtn.Position.Y.Scale, MobileBtn.Position.Y.Offset + (MobileBtn.Size.Y.Offset/2)
+        )
+        
+        -- Fly into the Sun Logo like a meteor
+        Tw(MainFrame, {
+            Size = UDim2.new(0, 0, 0, 0),
+            Position = targetPos,
+            BackgroundTransparency = 1
+        }, 0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+        
+        task.delay(0.4, function()
+            if not uiVisible then MainFrame.Visible = false end
+        end)
+    end
 end
 
 UserInputService.InputBegan:Connect(function(input, processed)
@@ -1526,14 +1553,8 @@ CloseBtn.MouseButton1Click:Connect(function()
     getgenv().SunSkriptLoaded = false
 end)
 
-local minimized = false
 MinBtn.MouseButton1Click:Connect(function()
-    minimized = not minimized
-    if minimized then
-        Tw(MainFrame, { Size = UDim2.new(0, 560, 0, 42) }, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
-    else
-        Tw(MainFrame, { Size = UDim2.new(0, 560, 0, 380) }, 0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-    end
+    ToggleUI()
 end)
 
 -- ═══════════════════════════════════════════════
