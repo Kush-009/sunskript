@@ -52,7 +52,7 @@ local tweening = false
 local noclipConn = nil
 
 local function TweenTo(cf, speed)
-    speed = speed or 320
+    speed = speed or 275 -- Reduced speed to bypass Blox Fruits anticheat
     local hrp = GetHRP()
     if not hrp then return end
     
@@ -95,7 +95,23 @@ local function Teleport(cf)
         if dist < 250 then
             hrp.CFrame = cf
         else
-            TweenTo(cf, 320)
+            if State.InstantTP then
+                -- Reset Bypass: reset character, move hrp before respawn
+                local hum = GetHumanoid()
+                if hum then
+                    hum.Health = 0
+                    hrp.CFrame = cf
+                    Player.CharacterAdded:Wait()
+                    local newChar = Player.Character or Player.CharacterAdded:Wait()
+                    local newHrp = newChar:WaitForChild("HumanoidRootPart", 5)
+                    if newHrp then
+                        newHrp.CFrame = cf
+                        task.wait(0.5) -- Wait for physics to settle
+                    end
+                end
+            else
+                TweenTo(cf, 275)
+            end
         end
     end
 end
@@ -236,6 +252,9 @@ local State = {
     FarmSpeed = 200,
     SelectedQuest = nil,
     AttackMethod = "Melee",   -- Melee, Sword, Fruit
+
+    -- Teleport
+    InstantTP = false,
 
     -- ESP
     FruitESP = false,
@@ -1317,6 +1336,10 @@ UI.AddLabel(espPage, "Auto-teleports to nearby fruits")
 
 -- TAB 3: Teleport
 local tpPage = UI.AddTab("Teleport", "📍")
+
+UI.AddSection(tpPage, "Settings")
+UI.AddToggle(tpPage, "Instant TP (Reset Bypass)", false, function(v) State.InstantTP = v end)
+UI.AddLabel(tpPage, "Instantly teleports you by resetting your character.")
 
 for seaName, islandList in pairs(Islands) do
     UI.AddSection(tpPage, seaName)
