@@ -19,10 +19,16 @@ local Directory = "https://raw.githubusercontent.com/Kush-009/sunskript/main/Gam
 
 local Scripts = {
     Free = {
-        [2753915549] = Directory .. "/BloxFruits.lua",      -- Blox Fruits (old place ID)
-        [100117331123089] = Directory .. "/BloxFruits.lua",  -- Blox Fruits (new place ID)
+        ["2753915549"] = Directory .. "/BloxFruits.lua",      -- Blox Fruits (old place ID)
+        ["100117331123089"] = Directory .. "/BloxFruits.lua",  -- Blox Fruits (new place ID)
     },
 }
+
+-- Helper: lookup by PlaceId or GameId (string-safe for int64)
+local function FindScript()
+    return Scripts.Free[tostring(game.PlaceId)]
+        or Scripts.Free[tostring(game.GameId)]
+end
 
 -- ═══════════════════════════════════════════
 -- SERVICES
@@ -405,10 +411,7 @@ New("TextLabel", {
 local gameName = "Unknown Game"
 local gameSupported = false
 
-if Scripts.Free[PlaceId] then
-    gameName = "Blox Fruits"
-    gameSupported = true
-elseif Scripts.Free[GameId] then
+if FindScript() then
     gameName = "Blox Fruits"
     gameSupported = true
 end
@@ -512,7 +515,7 @@ ExecBtn.MouseButton1Click:Connect(function()
 
     CircleRipple(ExecBtn, Mouse.X, Mouse.Y)
 
-    local scriptUrl = Scripts.Free[PlaceId] or Scripts.Free[GameId]
+    local scriptUrl = FindScript()
     if not scriptUrl then
         StatusLabel.Text = "Script URL not found."
         StatusLabel.TextColor3 = Colors.Error
