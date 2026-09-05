@@ -737,31 +737,63 @@ do
 end
 
 -- ═══════════════════════════════════════════
--- TOGGLE KEYBIND (RightShift)
+-- TOGGLE KEYBIND & MOBILE BUTTON
 -- ═══════════════════════════════════════════
 
 local uiVisible = true
+
+local function ToggleUI()
+    uiVisible = not uiVisible
+    Tween(MainCard, { BackgroundTransparency = uiVisible and 0.12 or 1 }, 0.25)
+    Tween(Overlay, { BackgroundTransparency = uiVisible and 0.55 or 1 }, 0.25)
+    for _, child in ipairs(MainCard:GetDescendants()) do
+        if child:IsA("TextLabel") or child:IsA("TextButton") then
+            Tween(child, { TextTransparency = uiVisible and 0 or 1 }, 0.25)
+        end
+        if child:IsA("Frame") and child.Name ~= "MainCard" then
+            Tween(child, { BackgroundTransparency = uiVisible and (child:GetAttribute("OrigTransparency") or child.BackgroundTransparency) or 1 }, 0.25)
+        end
+        if child:IsA("UIStroke") then
+            Tween(child, { Transparency = uiVisible and (child:GetAttribute("OrigTransparency") or 0.5) or 1 }, 0.25)
+        end
+    end
+    MainCard.Active = uiVisible
+end
+
+-- Keybind (RightControl for PC)
 UserInputService.InputBegan:Connect(function(input, processed)
     if processed then return end
-    if input.KeyCode == Enum.KeyCode.RightShift then
-        uiVisible = not uiVisible
-        Tween(MainCard, { BackgroundTransparency = uiVisible and 0.12 or 1 }, 0.25)
-        Tween(Overlay, { BackgroundTransparency = uiVisible and 0.55 or 1 }, 0.25)
-        for _, child in ipairs(MainCard:GetDescendants()) do
-            if child:IsA("TextLabel") or child:IsA("TextButton") then
-                Tween(child, { TextTransparency = uiVisible and 0 or 1 }, 0.25)
-            end
-            if child:IsA("Frame") and child.Name ~= "MainCard" then
-                Tween(child, { BackgroundTransparency = uiVisible and (child:GetAttribute("OrigTransparency") or child.BackgroundTransparency) or 1 }, 0.25)
-            end
-        end
-        MainCard.Active = uiVisible
+    if input.KeyCode == Enum.KeyCode.RightControl then
+        ToggleUI()
     end
+end)
+
+-- Mobile/Universal Toggle Button
+local MobileBtn = New("TextButton", {
+    Name = "MobileToggle",
+    Size = UDim2.new(0, 46, 0, 46),
+    Position = UDim2.new(0, 15, 0.5, -23),
+    BackgroundColor3 = Colors.Glass,
+    BackgroundTransparency = 0.2,
+    Text = "☀",
+    TextColor3 = Colors.Accent,
+    TextSize = 24,
+    Font = Enum.Font.GothamBold,
+    ZIndex = 50,
+    Active = true,
+    Draggable = true,
+}, ScreenGui)
+New("UICorner", { CornerRadius = UDim.new(1, 0) }, MobileBtn)
+New("UIStroke", { Color = Colors.Accent, Thickness = 2, Transparency = 0.5 }, MobileBtn)
+
+MobileBtn.MouseButton1Click:Connect(function()
+    CircleRipple(MobileBtn, Mouse.X, Mouse.Y)
+    ToggleUI()
 end)
 
 -- ═══════════════════════════════════════════
 -- DONE
 -- ═══════════════════════════════════════════
 
-Notify(HUB_NAME, "Hub loaded! Press RightShift to toggle UI.")
+Notify(HUB_NAME, "Hub loaded! Press RightControl or tap the Sun icon to toggle UI.")
 print("[" .. HUB_NAME .. "] v" .. HUB_VERSION .. " loaded successfully.")
