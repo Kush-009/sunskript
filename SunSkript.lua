@@ -19,7 +19,8 @@ local Directory = "https://raw.githubusercontent.com/Kush-009/sunskript/main/Gam
 
 local Scripts = {
     Free = {
-        [2753915549] = Directory .. "/BloxFruits.lua",  -- Blox Fruits (main place)
+        [2753915549] = Directory .. "/BloxFruits.lua",      -- Blox Fruits (old place ID)
+        [100117331123089] = Directory .. "/BloxFruits.lua",  -- Blox Fruits (new place ID)
     },
 }
 
