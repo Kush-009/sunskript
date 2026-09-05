@@ -1458,6 +1458,28 @@ end
 local uiVisible = true
 local lastPos = UDim2.new(0.5, 0, 0.5, 0) -- Corrected default center position for AnchorPoint(0.5, 0.5)
 
+local MobileBtn = Instance.new("TextButton")
+MobileBtn.Name = "MobileToggle"
+MobileBtn.Size = UDim2.new(0, 46, 0, 46)
+MobileBtn.Position = UDim2.new(0, 15, 0.5, -23)
+MobileBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+MobileBtn.BackgroundTransparency = 0.2
+MobileBtn.Text = "☀"
+MobileBtn.TextColor3 = Color3.fromRGB(255, 180, 50)
+MobileBtn.TextSize = 24
+MobileBtn.Font = Enum.Font.GothamBold
+MobileBtn.ZIndex = 50
+MobileBtn.Active = true
+MobileBtn.Draggable = true
+MobileBtn.Parent = ScreenGui
+
+local MobileBtnCorner = Instance.new("UICorner", MobileBtn)
+MobileBtnCorner.CornerRadius = UDim.new(1, 0)
+local MobileBtnStroke = Instance.new("UIStroke", MobileBtn)
+MobileBtnStroke.Color = Color3.fromRGB(255, 180, 50)
+MobileBtnStroke.Thickness = 2
+MobileBtnStroke.Transparency = 0.5
+
 local function ToggleUI()
     uiVisible = not uiVisible
     if uiVisible then
@@ -1495,28 +1517,6 @@ UserInputService.InputBegan:Connect(function(input, processed)
         ToggleUI()
     end
 end)
-
-local MobileBtn = Instance.new("TextButton")
-MobileBtn.Name = "MobileToggle"
-MobileBtn.Size = UDim2.new(0, 46, 0, 46)
-MobileBtn.Position = UDim2.new(0, 15, 0.5, -23)
-MobileBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-MobileBtn.BackgroundTransparency = 0.2
-MobileBtn.Text = "☀"
-MobileBtn.TextColor3 = Color3.fromRGB(255, 180, 50)
-MobileBtn.TextSize = 24
-MobileBtn.Font = Enum.Font.GothamBold
-MobileBtn.ZIndex = 50
-MobileBtn.Active = true
-MobileBtn.Draggable = true
-MobileBtn.Parent = ScreenGui
-
-local MobileBtnCorner = Instance.new("UICorner", MobileBtn)
-MobileBtnCorner.CornerRadius = UDim.new(1, 0)
-local MobileBtnStroke = Instance.new("UIStroke", MobileBtn)
-MobileBtnStroke.Color = Color3.fromRGB(255, 180, 50)
-MobileBtnStroke.Thickness = 2
-MobileBtnStroke.Transparency = 0.5
 
 MobileBtn.MouseButton1Click:Connect(function()
     ToggleUI()
