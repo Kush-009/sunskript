@@ -48,6 +48,46 @@ local function IsAlive()
     return hum and hum.Health > 0
 end
 
+local tweening = false
+local noclipConn = nil
+
+local function TweenTo(cf, speed)
+    speed = speed or 320
+    local hrp = GetHRP()
+    if not hrp then return end
+    
+    local dist = (hrp.Position - cf.Position).Magnitude
+    local t = dist / speed
+    if t < 0.1 then t = 0.1 end
+    
+    local tw = TweenService:Create(hrp, TweenInfo.new(t, Enum.EasingStyle.Linear), { CFrame = cf })
+    
+    local bv = Instance.new("BodyVelocity")
+    bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    bv.Velocity = Vector3.new(0, 0, 0)
+    bv.Parent = hrp
+    
+    tweening = true
+    if not noclipConn then
+        noclipConn = RunService.Stepped:Connect(function()
+            if tweening and Player.Character then
+                for _, v in ipairs(Player.Character:GetDescendants()) do
+                    if v:IsA("BasePart") then
+                        v.CanCollide = false
+                    end
+                end
+            end
+        end)
+    end
+    
+    tw:Play()
+    tw.Completed:Wait()
+    
+    tweening = false
+    if noclipConn then noclipConn:Disconnect(); noclipConn = nil end
+    if bv then bv:Destroy() end
+end
+
 local function Teleport(cf)
     local hrp = GetHRP()
     if hrp then
@@ -55,21 +95,9 @@ local function Teleport(cf)
         if dist < 250 then
             hrp.CFrame = cf
         else
-            TweenTo(cf, 300)
+            TweenTo(cf, 320)
         end
     end
-end
-
-local function TweenTo(cf, speed)
-    speed = speed or 200
-    local hrp = GetHRP()
-    if not hrp then return end
-    local dist = (hrp.Position - cf.Position).Magnitude
-    local t = dist / speed
-    if t < 0.1 then t = 0.1 end
-    local tw = TweenService:Create(hrp, TweenInfo.new(t, Enum.EasingStyle.Linear), { CFrame = cf })
-    tw:Play()
-    tw.Completed:Wait()
 end
 
 local function GetDistance(pos)
