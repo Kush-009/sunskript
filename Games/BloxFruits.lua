@@ -1456,7 +1456,7 @@ end
 -- ═══════════════════════════════════════════════
 
 local uiVisible = true
-local lastPos = UDim2.new(0.5, -280, 0.5, -190) -- Default center position
+local lastPos = UDim2.new(0.5, 0, 0.5, 0) -- Corrected default center position for AnchorPoint(0.5, 0.5)
 
 local function ToggleUI()
     uiVisible = not uiVisible
