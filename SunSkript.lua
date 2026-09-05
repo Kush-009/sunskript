@@ -15,7 +15,7 @@
 local HUB_NAME = "Sun Skript"
 local HUB_VERSION = "1.0.0"
 
-local Directory = "https://raw.githubusercontent.com/YOURUSER/SunSkript/main/Games"
+local Directory = "https://raw.githubusercontent.com/Kush-009/sunskript/refs/heads/main/SunSkript.lua"
 
 local Scripts = {
     Free = {
